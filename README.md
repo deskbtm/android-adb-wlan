@@ -4,20 +4,34 @@
 
 &nbsp;&nbsp;**connect adb in wlan**
 
+## On the same LAN | 在同一局域网
+
 ## Usage
 
-# **_On the same LAN!!!!!!!!! | 在同一局域网!!!!!!!!_**
+remember to add the adb to the env path | 添加 adb 到环境变量
+<br />
 
-1. keymap `ctrl + alt + ]`
-2. or using icon button Upper right
-3. using command `ctrl + shift + p` ;
+use ways
 
+- keymap `ctrl + alt + ]`
+- using icon button upper right
+- using command `ctrl + shift + p` ;
+
+command
+
+```txt
 - android restart adb
 - android adb wlan connect
+```
+
+## Notice
+
+if prompt `more than one device` using the restart command
 
 ## Release Notes
 
-### 0.0.1
+### 0.0.2
 
-zaja5x4nc6hsvlhrig5w3ttu6o45my26ljrrp3lzhgho6pdtkeaq
-2wssklks65pacdxlmhkoyi66h5qdp72eaky66j6kgb22bbckldzq
+1. update readme
+
+### 0.0.1
