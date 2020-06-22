@@ -2,33 +2,48 @@
 
 ## Features
 
-&nbsp;&nbsp;**connect adb in wlan**
+1. Connect adb using wlan
+2. Support multiple devices
 
-## On the same LAN | 在同一局域网
+## Notification
 
-## Usage
+* The device must be on the same LAN
+* lf there is a bug, you can try restarting adb
+* The first version is only for me personally, so many devices cannot connect
+* **I just tested on windows. There is no guarantee that everyone can use it normally**  
+* **not support vm**
 
-remember to add the adb to the env path | 添加 adb 到环境变量
-<br />
+- - -
 
-use ways
+## usage
 
-- keymap `ctrl + alt + ]`
-- using icon button upper right
-- using command `ctrl + shift + p` ;
+1. connect the USB
+2. make sure that your mobile and pc on the same WLAN
 
-command
+There are many ways to start
 
-```txt
+* using icon button upper right ⭐
+* keymap `ctrl + alt + ]`
+* using command `ctrl + shift + p` ;
+
+### commands
+
+``` txt
 - android restart adb
 - android adb wlan connect
 ```
 
-## Notice
+## Recommend extension
 
-if prompt `more than one device` using the restart command
+Flutter
 
 ## Release Notes
+
+### 0.0.3
+
+1\. Fix bugs
+2\. Support multiple devices
+3\. Update readme
 
 ### 0.0.2
 

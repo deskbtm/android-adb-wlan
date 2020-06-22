@@ -1,3 +1,4 @@
+import { Devices } from './utils';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
@@ -5,12 +6,13 @@ import Utils from "./utils";
 import * as open from "open";
 import * as delay from "delay";
 
+
 const utils = new Utils();
 const ADB_DOWNLOAD_URL = "https://adbshell.com/downloads";
 
-const notExistAdb = async function() {
+const notExistAdb = async function () {
   vscode.window.showErrorMessage("adb does not exist, please install");
-  await open(ADB_DOWNLOAD_URL).catch(err => {
+  await open(ADB_DOWNLOAD_URL).catch(_err => {
     console.error(`open ${ADB_DOWNLOAD_URL} failed`);
   });
 };
@@ -28,55 +30,77 @@ export function activate(context: vscode.ExtensionContext) {
     "android.adb.connect",
     async () => {
       const isAdb = utils.checkAdbExist(notExistAdb);
+      const pickList: (Devices | string)[] = [];
       if (isAdb) {
         const devices = utils.checkDevices();
         if (devices.length === 0) {
           vscode.window.showWarningMessage("Please connect usb first");
+          return;
+        }
+        pickList.push(...devices, "restart");
+
+        const picked = await vscode.window.showQuickPick(pickList.map((val) => {
+          return typeof val === "string" ? val :
+            `📱 ${val.model.replace('model:', "")}  👙 ${val.device}\t\t${utils.isIp(val.device) ? "Connected" : ""}`;
+        }));
+
+        if (picked === undefined) {
+          return;
         }
 
-        if (devices.length > 1) {
-          vscode.window.showErrorMessage(
-            "More than one Device, Please restart the adb"
-          );
+        if (picked === "restart") {
+          vscode.commands.executeCommand("android.adb.restart");
+          return;
         }
 
-        if (devices.length === 1) {
-          let devicesList = devices
-            .map(ele => `device:${ele.device}  ${ele.model}`)
-            .join("\n");
-          vscode.window.showInformationMessage(devicesList);
-          const port = await vscode.window.showInputBox({
-            placeHolder: "port (default:1031)", // 在输入框内的提示信息
-            prompt: "Input Randomly" // 在输入框下方的提示信息
-          });
-          await utils.setTcpIp(port!);
-          await delay(1500);
-          const addr = utils.getAddress();
+        const port = await vscode.window.showInputBox({
+          value: "1031",
+          placeHolder: "port (default:1031)", // 在输入框内的提示信息
+          prompt: "Input Randomly" // 在输入框下方的提示信息
+        });
 
-          if (!!addr) {
+        if (port === undefined) { return; };
+
+        const isSet = await utils.setTcpIpWithDevice(port!, devices[0].device);
+
+        if (!!!isSet) {
+          vscode.window.showErrorMessage("unset tcpip connection");
+          return;
+        }
+        await delay(2000);
+        const addr = utils.getDeviceAddress(devices[0].device) as string[];
+        if (!!addr && addr.length !== 0) {
+          const result = await vscode.window.showQuickPick(addr);
+          !!result &&
             utils
-              .connect(addr as string)
+              .connect(result!)
               .then(() => {
                 vscode.window.showInformationMessage(
                   "Connect success, Pull out the USB",
                   { modal: true }
                 );
               })
-              .catch(() => {
+              .catch((_err) => {
                 vscode.window.showErrorMessage("Connect Error");
               });
-          } else {
-            vscode.window.showErrorMessage("Ip parse Error");
-          }
+        } else {
+          vscode.window.showWarningMessage("not search address");
         }
+
       }
     }
   );
+
   let restartServer = vscode.commands.registerCommand(
     "android.adb.restart",
-    () => {
+    async () => {
       try {
-        utils.restartServer();
+        utils.clearPorts();
+        await utils.restartServer();
+        vscode.window.showInformationMessage(
+          "Adb restart success",
+          { modal: true }
+        );
       } catch (e) {
         vscode.window.showErrorMessage(e);
       }
@@ -87,4 +111,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
