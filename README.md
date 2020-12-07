@@ -7,11 +7,16 @@
 
 ## Notification
 
-* The device must be on the same LAN
-* lf there is a bug, you can try restarting adb
-* The first version is only for me personally, so many devices cannot connect
-* **I just tested on windows. There is no guarantee that everyone can use it normally**  
-* **not support vm**
+### 1. **I just tested on windows. There is no guarantee that everyone can use it normally**  
+### 2. **not support vm**
+
+3. The device must be on the same LAN
+4. lf there is a bug, you can try restarting adb
+5. The first version is only for me personally, so many devices cannot connect
+
+## screenshot
+
+![](./usage.gif)
 
 - - -
 
@@ -38,6 +43,11 @@ There are many ways to start
 Flutter
 
 ## Release Notes
+
+### 0.0.5 2020/12/7
+
+1\. Support android 10 +
+2\. Support input ip manually
 
 ### 0.0.3
 

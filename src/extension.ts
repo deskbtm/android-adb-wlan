@@ -8,10 +8,10 @@ import * as delay from "delay";
 
 
 const utils = new Utils();
-const ADB_DOWNLOAD_URL = "https://adbshell.com/downloads";
+const ADB_DOWNLOAD_URL = "https://developer.android.com/studio/releases/platform-tools";
 
 const notExistAdb = async function () {
-  vscode.window.showErrorMessage("adb does not exist, please install");
+  vscode.window.showErrorMessage("adb does not exist, please install, manually configure the environment", { modal: true });
   await open(ADB_DOWNLOAD_URL).catch(_err => {
     console.error(`open ${ADB_DOWNLOAD_URL} failed`);
   });
@@ -29,26 +29,26 @@ export function activate(context: vscode.ExtensionContext) {
   let connectWlan = vscode.commands.registerCommand(
     "android.adb.connect",
     async () => {
-      const isAdb = utils.checkAdbExist(notExistAdb);
+      const isExistAdb = utils.checkAdbExist(notExistAdb);
       const pickList: (Devices | string)[] = [];
-      if (isAdb) {
+      if (isExistAdb) {
         const devices = utils.checkDevices();
         if (devices.length === 0) {
           vscode.window.showWarningMessage("Please connect usb first");
           return;
         }
-        pickList.push(...devices, "restart");
+        pickList.push(...devices, "Restart adb");
 
         const picked = await vscode.window.showQuickPick(pickList.map((val) => {
           return typeof val === "string" ? val :
-            `📱 ${val.model.replace('model:', "")}  👙 ${val.device}\t\t${utils.isIp(val.device) ? "Connected" : ""}`;
+            `📱 ${val.model?.replace('model:', "")} 🍰 ${val.device}\t\t${utils.isIp(val.device) ? "Connected" : ""}`;
         }));
 
         if (picked === undefined) {
           return;
         }
 
-        if (picked === "restart") {
+        if (picked === "Restart adb") {
           vscode.commands.executeCommand("android.adb.restart");
           return;
         }
@@ -64,29 +64,37 @@ export function activate(context: vscode.ExtensionContext) {
         const isSet = await utils.setTcpIpWithDevice(port!, devices[0].device);
 
         if (!!!isSet) {
-          vscode.window.showErrorMessage("unset tcpip connection");
           return;
         }
         await delay(2000);
         const addr = utils.getDeviceAddress(devices[0].device) as string[];
+        let result;
+
         if (!!addr && addr.length !== 0) {
-          const result = await vscode.window.showQuickPick(addr);
-          !!result &&
-            utils
-              .connect(result!)
-              .then(() => {
-                vscode.window.showInformationMessage(
-                  "Connect success, Pull out the USB",
-                  { modal: true }
-                );
-              })
-              .catch((_err) => {
-                vscode.window.showErrorMessage("Connect Error");
-              });
+          result = await vscode.window.showQuickPick(addr);
         } else {
-          vscode.window.showWarningMessage("not search address");
+          vscode.window.showWarningMessage("Not found address through usb please connect manually");
+          result = await vscode.window.showInputBox({
+            value: "",
+            prompt: "Input mobile phone intranet IP"
+          });
         }
 
+        if (!!result && result !== '') {
+          utils
+            .connect(result!, devices[0].device)
+            .then(() => {
+              vscode.window.showInformationMessage(
+                "Connect success, Pull out the USB",
+                { modal: true }
+              );
+            })
+            .catch((_err) => {
+              vscode.window.showErrorMessage(`Connect Error ${_err}`);
+            });
+        } else {
+          vscode.window.showWarningMessage("Please input value");
+        }
       }
     }
   );
@@ -95,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
     "android.adb.restart",
     async () => {
       try {
-        utils.clearPorts();
+        vscode.window.showInformationMessage("Adb Restarting");
         await utils.restartServer();
         vscode.window.showInformationMessage(
           "Adb restart success",

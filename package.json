@@ -2,7 +2,7 @@
 	"name": "android-adb-wlan",
 	"displayName": "Android ADB WLAN",
 	"description": "connect android with wlan",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"preview": true,
 	"icon": "android.png",
 	"license": "MIT",
@@ -15,7 +15,8 @@
 		"vscode": "^1.42.0"
 	},
 	"categories": [
-		"Debuggers"
+		"Debuggers",
+		"Other"
 	],
 	"activationEvents": [
 		"onCommand:android.adb.connect",
@@ -62,6 +63,7 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
+		"@types/ip": "^1.1.0",
 		"@types/mocha": "^7.0.1",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.42.0",
@@ -76,6 +78,7 @@
 	"dependencies": {
 		"delay": "^4.3.0",
 		"execa": "^4.0.0",
+		"ip": "^1.1.5",
 		"open": "^7.0.2"
 	}
 }
