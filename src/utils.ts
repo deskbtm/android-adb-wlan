@@ -1,13 +1,18 @@
 import { commandSync, command } from "execa";
 import * as vscode from "vscode";
 import * as delay from "delay";
-import * as  os from "os";
-import { isIPv4 } from 'net';
-import * as ipUtil from 'ip';
+import * as os from "os";
+import { isIPv4 } from "net";
+import * as ipUtil from "ip";
 
-export interface Devices {
+export interface Device {
   device: string;
   model: string;
+}
+
+export interface DeviceAddress {
+  seemingAddress: string[];
+  usbAddress: string[];
 }
 
 export default class Utils {
@@ -16,10 +21,10 @@ export default class Utils {
 
   /**
    * Parses devices
-   * @param stdout 
-   * @returns devices 
+   * @param stdout
+   * @returns devices
    */
-  private parseDevices = (stdout: string): Devices => {
+  private parseDevices = (stdout: string): Device => {
     const arr = stdout.split(/\s+/g);
     // // 顺便添加已连接的ip端口 到 usedPorts
     // if (this.isIp(arr[3])) {
@@ -30,11 +35,11 @@ export default class Utils {
   };
 
   private isObject(target: any): boolean {
-    return Object.prototype.toString.call(target) === '[object Object]';
+    return Object.prototype.toString.call(target) === "[object Object]";
   }
 
-  private getSeeminglyLanAddress = (): { seemsIp: string, allIpv4: string[] } => {
-    const seemsIps: string[] = [];
+  private getSeemingLanAddress = (): { seemsLanIp: string; allIpv4: string[] } => {
+    const seemsLanIps: string[] = [];
     const bIp: string[] = [];
     const valid = {} as any;
 
@@ -43,39 +48,36 @@ export default class Utils {
       bIp.push(`172.${index}.0.0/16`);
     }
 
-    const normalInternalIps = ['10.0.0.0/0', '192.168.0.0/16'].concat(bIp).map((val) => ipUtil.cidrSubnet(val));
+    const normalInternalIps = ["10.0.0.0/0", "192.168.0.0/16"].concat(bIp).map((val) => ipUtil.cidrSubnet(val));
 
     const netInterfaces = os.networkInterfaces();
 
     for (const adapter of Object.values(netInterfaces)) {
-
       for (const instance of adapter) {
         if (!instance.internal && isIPv4(instance.address)) {
-          seemsIps.push(instance.address);
+          seemsLanIps.push(instance.address);
         }
       }
     }
 
-    valid.allIpv4 = seemsIps;
+    valid.allIpv4 = seemsLanIps;
 
-    for (const ip of seemsIps) {
+    for (const ip of seemsLanIps) {
       normalInternalIps.forEach((val) => {
-        val.contains(ip) && (valid.seemsIp = ip);
+        val.contains(ip) && (valid.seemsLanIp = ip);
       });
     }
 
     return valid;
   };
 
-
   private getAllIpsRec(netInter: any, saver: string[]) {
     for (const key in netInter) {
       const current = netInter[key];
       if (Array.isArray(current)) {
-
         for (let index = 0; index < current.length; index++) {
           if (this.isObject(current[index])) {
-            saver.push(current[index]['address']);
+            saver.push(current[index]["address"]);
             this.getAllIpsRec(current[index], saver);
           }
         }
@@ -83,7 +85,6 @@ export default class Utils {
         this.getAllIpsRec(current, saver);
       }
     }
-
   }
 
   public isIp(ip: string): boolean {
@@ -98,12 +99,10 @@ export default class Utils {
   }
 
   private parseAddress(stdout: string): string[] | undefined {
-    return stdout
-      .match(/(?<=inet\s+)(((\d+)\.)+(\d+))\/\d+/g)?.map((val) => val.trim());
+    return stdout.match(/(?<=inet\s+)(((\d+)\.)+(\d+))\/\d+/g)?.map((val) => val.trim());
   }
 
   public checkAdbExist(unExist: (err: Error) => void): boolean {
-
     try {
       const result = commandSync("adb --version");
       console.log(result.stderr);
@@ -115,28 +114,19 @@ export default class Utils {
     }
   }
 
-  public checkDevices(): Devices[] {
+  public checkDevices(): Device[] {
     const output = commandSync(`adb devices -l`).stdout;
     const allLines = output
       .split(/\n|\r\n/)
       .slice(1)
-      .filter(val => val !== "");
+      .filter((val) => val !== "");
     if (allLines.length === 0) {
       return [];
     }
     return allLines.map(this.parseDevices);
   }
 
-  // public clearPorts = () => {
-  //   this.usedPorts.clear();
-  // };
-
   public async setTcpIpWithDevice(p: string, device: string): Promise<boolean> {
-    // if (this.usedPorts.has(p)) {
-    //   vscode.window.showErrorMessage(`${p} has been used`);
-    //   return false;
-    // }
-
     this.port = p;
     console.debug(`adb -s ${device} tcpip ${this.port}`);
     try {
@@ -148,11 +138,20 @@ export default class Utils {
     return true;
   }
 
-  public getDeviceAddress(device: string): (string | boolean)[] | undefined {
-    console.debug(`adb -s ${device} shell ip -o -4 addr`);
+  public getDeviceAddress(device: string): DeviceAddress {
     const output = commandSync(`adb -s ${device} shell ip -o -4 addr`).stdout;
-    const ips = this.getSeeminglyLanAddress();
-    return this.parseAddress(output)?.map((val) => ipUtil.cidrSubnet(val).contains(ips.seemsIp) ? val?.replace(/\/(\d+)$/, '') : false)?.filter(Boolean);
+    const lanAddress = this.getSeemingLanAddress();
+    let usbAddress = this.parseAddress(output) ?? [];
+    const seemingAddress = usbAddress
+      ?.map((val) => (ipUtil.cidrSubnet(val).contains(lanAddress.seemsLanIp) ? val?.replace(/\/(\d+)$/, "") : false))
+      ?.filter(Boolean) as string[];
+
+    usbAddress = usbAddress.map((val) => val.replace(/\/(\d+)$/, ""));
+
+    return {
+      seemingAddress,
+      usbAddress,
+    };
   }
 
   public connect(ip: string, name: string) {
@@ -164,5 +163,18 @@ export default class Utils {
     await command("adb kill-server");
     await delay(800);
     await command("adb start-server");
+  }
+
+  public getAndroidReleaseVersion() {
+    const stdout = commandSync("adb shell getprop ro.build.version.release").stdout;
+    return parseInt(stdout);
+  }
+
+  public adbPairing(host: string, port: string, code: string) {
+    return commandSync(`adb pair ${host}:${port} ${code}`);
+  }
+
+  public adbConnect(host: string, port: string) {
+    return commandSync(`adb connect ${host}:${port}`);
   }
 }

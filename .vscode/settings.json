@@ -14,4 +14,5 @@
         "wlan"
     ],
     "telemetry.enableCrashReporter": false,
+    "workspace.isHidden": false,
 }

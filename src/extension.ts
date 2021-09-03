@@ -1,122 +1,209 @@
-import { Devices } from './utils';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import Utils from "./utils";
+import Utils, { Device } from "./utils";
 import * as open from "open";
 import * as delay from "delay";
 
-
 const utils = new Utils();
-const ADB_DOWNLOAD_URL = "https://developer.android.com/studio/releases/platform-tools";
 
-const notExistAdb = async function () {
-  vscode.window.showErrorMessage("adb does not exist, please install, manually configure the environment", { modal: true });
-  await open(ADB_DOWNLOAD_URL).catch(_err => {
-    console.error(`open ${ADB_DOWNLOAD_URL} failed`);
+const Urls = {
+  ADB_DOWNLOAD: "https://developer.android.com/studio/releases/platform-tools",
+  TUTORIAL: "https://github.com/deskbtm/android-adb-wlan",
+};
+
+const Texts = {
+  STATUSBAR_TIP: "Device list",
+};
+
+const VscodeCmd = {
+  restart: "android.adb.restart",
+  connect: "android.adb.connect",
+  devices: "android.adb.devices",
+};
+
+enum PickCmd {
+  ANDROID11_ADB = "Android 11 wireless ADB",
+  TUTORIAL = "Tutorial",
+  RESTART_ADB = "Restart ADB",
+}
+
+const handleNotExistAdb = async function () {
+  vscode.window.showErrorMessage("ADB does not exist, please install manually and configure the environment", { modal: true });
+  await delay(1000);
+  await open(Urls.ADB_DOWNLOAD).catch((_err) => {
+    console.error(`Open ${Urls.ADB_DOWNLOAD} failed`);
   });
+};
+
+const connectADBThroughUSB = async function (devices: Device[]) {
+  const port = await vscode.window.showInputBox({
+    value: "1031",
+    placeHolder: "port (default:1031)", // 在输入框内的提示信息
+    prompt: "Input Randomly", // 在输入框下方的提示信息
+  });
+
+  if (!!!port) {
+    return;
+  }
+
+  const isSet = await utils.setTcpIpWithDevice(port!, devices[0].device);
+
+  if (!!!isSet) {
+    return;
+  }
+
+  await delay(2000);
+  const addr = utils.getDeviceAddress(devices[0].device);
+  let result;
+
+  if (!!addr.seemingAddress && addr.seemingAddress.length !== 0) {
+    result = await vscode.window.showQuickPick(addr.seemingAddress);
+  } else {
+    vscode.window.showWarningMessage("Unrecognized address through USB, Please connect manually");
+    result = await vscode.window.showQuickPick(addr.usbAddress, {
+      placeHolder: "Pick Android internal IP",
+    });
+  }
+
+  if (!!result) {
+    utils
+      .connect(result!, devices[0].device)
+      .then(() => {
+        vscode.window.showInformationMessage("Connect success, Pull out the USB", { modal: true });
+      })
+      .catch((_err) => {
+        vscode.window.showErrorMessage(`Connect Error ${_err}`);
+      });
+  }
+};
+
+const connectADBAboveAndroidR = async function () {
+  const host = await vscode.window.showInputBox({
+    prompt: "Host",
+  });
+
+  if (!!!host) {
+    return;
+  }
+
+  const port = await vscode.window.showInputBox({
+    prompt: "Port",
+  });
+
+  if (!!!port) {
+    return;
+  }
+
+  const code = await vscode.window.showInputBox({
+    prompt: "Paring Code(Linux and Windows can not enter)",
+  });
+
+  let result;
+
+  if (code) {
+    result = utils.adbPairing(host!, port!, code!);
+  } else {
+    result = utils.adbConnect(host!, port!);
+  }
+
+  vscode.window.showInformationMessage(result.stdout, { modal: true });
+};
+
+const DeviceItem = (val: Device) => `📱 ${val.model?.replace("model:", "")} 🍰 ${val.device}\t\t${utils.isIp(val.device) ? "Connected" : ""}`;
+
+const showDevicesList = async function () {
+  return vscode.window.showQuickPick(
+    utils.checkDevices().map((val) => {
+      return DeviceItem(val);
+    })
+  );
+};
+
+const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, -2);
+
+const createDevicesListStatusBar = async function () {
+  const devices = await utils.checkDevices();
+
+  if (devices.length > 0) {
+    const model = devices[0].model ? devices[0].model.replace("model:", "") : "";
+    statusBar.tooltip = Texts.STATUSBAR_TIP;
+    statusBar.text = "WLAN📱:" + model;
+    statusBar.command = VscodeCmd.devices;
+
+    statusBar.show();
+  } else {
+    statusBar.hide();
+  }
 };
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  let connectWlan = vscode.commands.registerCommand(
-    "android.adb.connect",
-    async () => {
-      const isExistAdb = utils.checkAdbExist(notExistAdb);
-      const pickList: (Devices | string)[] = [];
-      if (isExistAdb) {
-        const devices = utils.checkDevices();
-        if (devices.length === 0) {
-          vscode.window.showWarningMessage("Please connect usb first");
-          return;
-        }
-        pickList.push(...devices, "Restart adb");
+  let connectWLAN = vscode.commands.registerCommand(VscodeCmd.connect, async () => {
+    const isExistADB = utils.checkAdbExist(handleNotExistAdb);
+    const pickList: (Device | string)[] = [];
+    if (isExistADB) {
+      const devices = utils.checkDevices();
 
-        const picked = await vscode.window.showQuickPick(pickList.map((val) => {
-          return typeof val === "string" ? val :
-            `📱 ${val.model?.replace('model:', "")} 🍰 ${val.device}\t\t${utils.isIp(val.device) ? "Connected" : ""}`;
-        }));
+      pickList.push(...devices, PickCmd.ANDROID11_ADB, PickCmd.TUTORIAL, PickCmd.RESTART_ADB);
 
-        if (picked === undefined) {
-          return;
-        }
+      const picked = await vscode.window.showQuickPick(
+        pickList.map((val) => {
+          return typeof val === "string" ? val : DeviceItem(val);
+        })
+      );
 
-        if (picked === "Restart adb") {
-          vscode.commands.executeCommand("android.adb.restart");
-          return;
-        }
+      if (!!!picked) {
+        return;
+      }
 
-        const port = await vscode.window.showInputBox({
-          value: "1031",
-          placeHolder: "port (default:1031)", // 在输入框内的提示信息
-          prompt: "Input Randomly" // 在输入框下方的提示信息
-        });
+      switch (picked) {
+        case PickCmd.RESTART_ADB:
+          vscode.commands.executeCommand(VscodeCmd.restart);
+          break;
 
-        if (port === undefined) { return; };
+        case PickCmd.ANDROID11_ADB:
+          await connectADBAboveAndroidR();
+          break;
 
-        const isSet = await utils.setTcpIpWithDevice(port!, devices[0].device);
-
-        if (!!!isSet) {
-          return;
-        }
-        await delay(2000);
-        const addr = utils.getDeviceAddress(devices[0].device) as string[];
-        let result;
-
-        if (!!addr && addr.length !== 0) {
-          result = await vscode.window.showQuickPick(addr);
-        } else {
-          vscode.window.showWarningMessage("Not found address through usb please connect manually");
-          result = await vscode.window.showInputBox({
-            value: "",
-            prompt: "Input mobile phone intranet IP"
+        case PickCmd.TUTORIAL:
+          open(Urls.TUTORIAL).catch((err) => {
+            console.error(err);
           });
-        }
+          break;
 
-        if (!!result && result !== '') {
-          utils
-            .connect(result!, devices[0].device)
-            .then(() => {
-              vscode.window.showInformationMessage(
-                "Connect success, Pull out the USB",
-                { modal: true }
-              );
-            })
-            .catch((_err) => {
-              vscode.window.showErrorMessage(`Connect Error ${_err}`);
-            });
-        } else {
-          vscode.window.showWarningMessage("Please input value");
-        }
+        default:
+          await connectADBThroughUSB(devices);
+          break;
       }
+      await createDevicesListStatusBar();
     }
-  );
+  });
 
-  let restartServer = vscode.commands.registerCommand(
-    "android.adb.restart",
-    async () => {
-      try {
-        vscode.window.showInformationMessage("Adb Restarting");
-        await utils.restartServer();
-        vscode.window.showInformationMessage(
-          "Adb restart success",
-          { modal: true }
-        );
-      } catch (e) {
-        vscode.window.showErrorMessage(e);
-      }
+  let restartServer = vscode.commands.registerCommand(VscodeCmd.restart, async () => {
+    try {
+      vscode.window.showInformationMessage("Adb Restarting");
+      statusBar.hide();
+      await utils.restartServer();
+      vscode.window.showInformationMessage("Adb restart success", { modal: true });
+    } catch (e) {
+      vscode.window.showErrorMessage(e);
     }
-  );
+  });
 
-  context.subscriptions.push(connectWlan, restartServer);
+  let devicesList = vscode.commands.registerCommand(VscodeCmd.devices, showDevicesList);
+
+  context.subscriptions.push(connectWLAN, restartServer, devicesList, statusBar);
+
+  createDevicesListStatusBar();
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {}
