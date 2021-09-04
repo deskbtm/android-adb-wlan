@@ -3,7 +3,7 @@
 ## New Future 0.0.6 
 
 1. Support Android R+ connecting to a device over Wi-Fi
-- You dont have to enter Paring Code if your os is Windows or Linux
+- You dont have to enter Paring Code if your OS is Windows or Linux
 - Details [https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+)
 2. Add status bar and devices list
 
@@ -25,9 +25,9 @@
 
 ## Usage
 
-1. Connect the USB (Android 11+ both usb and wireless)
+1. Connect the USB (Android 11+ both USB and Wireless)
 2. Make sure that your mobile and pc on the same WLAN
-3. active extension
+3. Active extension
 
 * Using icon button upper right ⭐
 * Using command `ctrl + shift + p` ;
@@ -65,6 +65,6 @@
 
 #### 0.0.2
 
-1. update readme
+1. Update readme
 
 #### 0.0.1
