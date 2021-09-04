@@ -41,12 +41,12 @@
 ```
 
 ## Notification
-1. **I just tested on windows. There is no guarantee that everyone can use it normally**  
+1. **I just tested on Windows. There is no guarantee that everyone can use it normally**  
 2. **Not support VM**
 
 3. The device must be on the same LAN
-4. lf something went wrong you can try restart ADB or commit bug to [](https://github.com/deskbtm/android-adb-wlan) 
-5. The first version is only for me personally, so many devices cannot connect
+4. lf something went wrong you can try restart ADB or report bug to [](https://github.com/deskbtm/android-adb-wlan) 
+5. The primary version is for myself, many devices cloud not work
 
 ## Release Notes
 

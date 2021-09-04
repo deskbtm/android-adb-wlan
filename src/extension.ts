@@ -80,6 +80,7 @@ const connectADBThroughUSB = async function (devices: Device[]) {
 
 const connectADBAboveAndroidR = async function () {
   const host = await vscode.window.showInputBox({
+    value: "192.168.",
     prompt: "Host",
   });
 
