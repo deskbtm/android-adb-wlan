@@ -3,7 +3,7 @@
 ## New Future 0.0.6 
 
 1. Support Android R+ connecting to a device over Wi-Fi
-- You can not enter Paring Code if your system is Windows os Linux
+- You dont have to enter Paring Code if your os is Windows or Linux
 - Details [https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+)
 2. Add status bar and devices list
 
