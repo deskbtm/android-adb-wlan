@@ -47,24 +47,3 @@
 3. The device must be on the same LAN
 4. lf something went wrong you can try restart ADB or report bug to [](https://github.com/deskbtm/android-adb-wlan) 
 5. The primary version is for myself, many devices cloud not work
-
-## Release Notes
-
-#### 0.0.6 2021/9/3
-
-#### 0.0.5 2020/12/7
-
-1. Support android 10 +
-2. Support input ip manually
-
-#### 0.0.3
-
-1\. Fix bugs
-2\. Support multiple devices
-3\. Update readme
-
-#### 0.0.2
-
-1. Update readme
-
-#### 0.0.1
