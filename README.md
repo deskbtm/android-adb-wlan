@@ -1,6 +1,6 @@
 # ANDROID ABD WLAN README
 
-## New Future 0.0.6 
+## New Feature 0.0.6 
 
 1. Support Android R+ connecting to a device over Wi-Fi
 - You dont have to enter Paring Code if your OS is Windows or Linux
