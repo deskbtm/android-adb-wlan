@@ -1,18 +1,26 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "files.exclude": {
-        "out": false // set this to true to hide the "out" folder with the compiled JS files
-    },
-    "search.exclude": {
-        "out": true // set this to false to include "out" folder in search results
-    },
-    // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-    "typescript.tsc.autoDetect": "off",
-    "cSpell.ignoreWords": [
-        "iface",
-        "tcpip",
-        "wlan"
-    ],
-    "telemetry.enableCrashReporter": false,
-    "workspace.isHidden": false,
+  "files.exclude": {},
+  "search.exclude": {
+    "out": true // set this to false to include "out" folder in search results
+  },
+  // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+  "typescript.tsc.autoDetect": "off",
+  "cSpell.ignoreWords": [
+    "iface",
+    "tcpip",
+    "wlan"
+  ],
+  "telemetry.enableCrashReporter": false,
+  "workspace.isHidden": false,
+  "ColorfulMonorepo.workspaces.collection": [
+    {
+      "path": "/home/nawbc/Workspace/android-adb-wlan",
+      "packageName": "android-adb-wlan",
+      "label": "🌱  android-adb-wlan",
+      "foreground": "#000000",
+      "background": "#a99fd4"
+    }
+  ],
+  "ColorfulMonorepo.drawer.init": true,
 }

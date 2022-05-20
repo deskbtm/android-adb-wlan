@@ -194,7 +194,7 @@ export async function activate(context: vscode.ExtensionContext) {
       statusBar.hide();
       await utils.restartServer();
       vscode.window.showInformationMessage("Adb restart success", { modal: true });
-    } catch (e) {
+    } catch (e: any) {
       vscode.window.showErrorMessage(e);
     }
   });

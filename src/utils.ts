@@ -102,7 +102,7 @@ export default class Utils {
     return stdout.match(/(?<=inet\s+)(((\d+)\.)+(\d+))\/\d+/g)?.map((val) => val.trim());
   }
 
-  public checkAdbExist(unExist: (err: Error) => void): boolean {
+  public checkAdbExist(unExist: (err: unknown) => void): boolean {
     try {
       const result = commandSync("adb --version");
       console.log(result.stderr);
@@ -132,7 +132,7 @@ export default class Utils {
     try {
       await command(`adb -s ${device} tcpip ${this.port}`);
     } catch (error) {
-      vscode.window.showErrorMessage(error);
+      vscode.window.showErrorMessage(error as any);
       return false;
     }
     return true;

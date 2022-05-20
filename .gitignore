@@ -4,3 +4,4 @@ node_modules
 *.vsix
 part_adb.ts
 package-lock.json
+.vscode/settings.json
