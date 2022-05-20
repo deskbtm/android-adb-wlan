@@ -2,10 +2,10 @@
   "name": "android-adb-wlan",
   "displayName": "Android ADB WLAN",
   "description": "connect android with wlan",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "icon": "android.png",
   "license": "MIT",
-  "publisher": "WangHan",
+  "publisher": "HanWang",
   "repository": {
     "type": "git",
     "url": "https://github.com/deskbtm/android-adb-wlan"

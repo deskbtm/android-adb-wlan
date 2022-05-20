@@ -46,7 +46,7 @@
 - Android adb wlan show devices
 ```
 
-## Recommended My Extensions
+## Recommend My Extensions
 
 [Colorful Monorepo](https://marketplace.visualstudio.com/items?itemName=deskbtm.colorful-monorepo&ssr=false#overview)
 
