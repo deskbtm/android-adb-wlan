@@ -11,7 +11,9 @@
     "url": "https://github.com/deskbtm/android-adb-wlan"
   },
   "engines": {
-    "vscode": "^1.42.0"
+    "vscode": "^1.42.0",
+    "yarn": "Please use npm",
+    "pnpm": "Please use npm"
   },
   "categories": [
     "Debuggers",
