@@ -26,11 +26,6 @@ export default class Utils {
    */
   private parseDevices = (stdout: string): Device => {
     const arr = stdout.split(/\s+/g);
-    // // 顺便添加已连接的ip端口 到 usedPorts
-    // if (this.isIp(arr[3])) {
-    //   const port = arr[3]?.split(':')[1]?.trim();
-    //   if (!!port) { this.usedPorts.add(port); }
-    // }
     return { device: arr[0], model: arr[3] };
   };
 
