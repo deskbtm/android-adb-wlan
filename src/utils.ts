@@ -17,8 +17,6 @@ export interface DeviceAddress {
 
 export default class Utils {
   private port: string = "1031";
-  // private usedPorts: Set<string> = new Set();
-
   /**
    * Parses devices
    * @param stdout
