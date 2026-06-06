@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Include production `node_modules` in the published VSIX (`--no-dependencies` prevented `open`, `delay`, `execa`, and `qrcode` from loading, so commands were never registered)
 
+### Changed
+
+- Set `engines.vscode` to `^1.64.0` (minimum for QuickPick separators and per-item action buttons)
+- Drop `quickPick.prompt` and move the format hint into `placeholder` for broader editor support
+
 ## [0.0.11] - 2026-06-06
 
 ### Added

@@ -124,9 +124,7 @@ const promptWirelessDeviceAddress = (recentIps: string[]): Promise<WirelessPromp
     let accepted = false;
 
     quickPick.title = "Wireless debugging address";
-    quickPick.placeholder = "IP:port";
-    quickPick.prompt =
-      "Format: IP:port (e.g. 192.168.1.100:5555), generate a pairing QR code, or select a recent IP below.";
+    quickPick.placeholder = "IP:port (e.g. 192.168.1.100:5555)";
     quickPick.value = "192.168.";
     quickPick.items = buildRecentIpQuickPickItems(recentIps);
 
