@@ -62,7 +62,7 @@ The extension shells out to the system `adb` binary. No additional daemon or mob
 
 | Item | Details |
 | --- | --- |
-| Editor | VS Code `^1.42.0` or compatible forks |
+| Editor | VS Code `^1.120.0` or compatible forks |
 | Host OS | Windows and Linux (primary targets) |
 | ADB | [Android SDK Platform-Tools](https://developer.android.com/studio/releases/platform-tools) on `PATH` |
 | Network | Phone and computer on the same LAN |
