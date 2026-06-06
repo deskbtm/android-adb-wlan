@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Compile
+        run: npm run compile
+
       - name: Verify tag matches package.json version
         run: |
           TAG="${GITHUB_REF#refs/tags/v}"
