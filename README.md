@@ -63,7 +63,7 @@ The extension shells out to the system `adb` binary. No additional daemon or mob
 | Item | Details |
 | --- | --- |
 | Editor | VS Code `^1.64.0` or compatible forks |
-| Host OS | Windows and Linux (primary targets) |
+| Host OS | Windows, macOS, and Linux |
 | ADB | [Android SDK Platform-Tools](https://developer.android.com/studio/releases/platform-tools) on `PATH` |
 | Network | Phone and computer on the same LAN |
 | Device | USB debugging enabled; wireless debugging enabled for Android 11+ |
@@ -175,7 +175,6 @@ If the issue persists, include your OS, Android version, ADB version, and comman
 
 ## Known Limitations
 
-- Primary testing coverage is on **Windows** and **Linux**; macOS behavior is not guaranteed.
 - **Virtual machines** are not supported.
 - Host and device must remain on the same LAN; cross-subnet or hotspot-only setups may fail.
 - Device compatibility varies by OEM image and ADB policy.
