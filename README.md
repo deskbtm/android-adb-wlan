@@ -1,13 +1,24 @@
 # Android ADB WLAN
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/HanWang.android-adb-wlan?label=version)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/HanWang.android-adb-wlan)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
+[![Version](https://vsmarketplacebadges.dev/version/HanWang.android-adb-wlan.svg)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
+[![Installs](https://vsmarketplacebadges.dev/installs/HanWang.android-adb-wlan.svg)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Connect Android devices to ADB over Wi-Fi directly from VS Code. Set up wireless debugging in a few steps, manage multiple devices, and keep your workflow cable-free after the initial pairing.
 
+## What's New
+
+Recent improvements in this release:
+
+- **QR code pairing (Android 11+)** — Generate an AOSP-compatible pairing QR in VS Code; scan on the phone to pair and connect without typing IP or codes.
+- **Recent IP history** — Previously used IPs appear in the Quick Pick; select to fill, or remove entries with the trash icon.
+- **Smarter mDNS connect** — When multiple `_adb-tls-connect._tcp` endpoints exist, stale ports (`Connection refused`) are skipped automatically until a working one is found.
+- **Test coverage** — Unit tests for parsers and pairing credentials; integration tests for command registration and extension activation.
+- **Automated publishing** — Pushing a `v*` tag triggers GitHub Actions to lint, test, and publish to the VS Code Marketplace.
+
 ## Table of Contents
 
+- [What's New](#whats-new)
 - [Overview](#overview)
 - [Features](#features)
 - [Requirements](#requirements)
@@ -41,6 +52,9 @@ The extension shells out to the system `adb` binary. No additional daemon or mob
 | Multi-device support | View and switch between multiple connected devices |
 | USB-assisted setup | `adb tcpip` flow for Android 10 and below |
 | Android 11+ pairing | Native wireless debugging with `adb pair` / `adb connect` |
+| QR code pairing | In-editor QR for **Pair device with QR code** on Android 11+ |
+| Recent IP history | Quick Pick list of recent wireless IPs with one-click fill and delete |
+| mDNS endpoint retry | Tries all `_adb-tls-connect._tcp` ports when stale entries refuse connections |
 | Status bar | Shows the current device model; click to open the device list |
 | IP selection | Prefers addresses on the same LAN segment as the host |
 
@@ -89,22 +103,11 @@ After a successful connection, the status bar displays the connected device mode
 
 Use this path when the device is connected over USB and supports `adb tcpip`.
 
-```text
-USB device detected
-  → enter TCP port (default: 1031)
-  → adb tcpip <port>
-  → pick device IP (auto-matched LAN IP preferred)
-  → adb connect <ip>:<port>
-  → disconnect USB
-```
-
-**Steps**
-
 1. Connect the device via USB and authorize the debugging prompt.
-2. Run `ADB WLAN: Connect over Wi-Fi`.
-3. Select the USB device from the picker.
+2. Run `ADB WLAN: Show Connected Devices`, or click the **ADB WLAN** item in the status bar.
+3. Select the USB device from the list.
 4. Enter a TCP port when prompted (default: `1031`).
-5. Choose the device IP address.
+5. Choose the device IP address (a matching LAN IP is preferred when available).
 6. Remove the USB cable once the success dialog appears.
 
 ### Wireless debugging (Android 11+)
@@ -126,8 +129,13 @@ WIFI:T:ADB;S:studio-<service>;P:<password>;;
 
 **Manual IP:port**
 
-1. In the address prompt, enter `IP:port` (e.g. `192.168.1.100:37043`), or select a recent IP below and append the port.
-2. Enter the pairing code if required, or leave it empty to connect directly.
+1. In the address prompt, enter `IP:port` (e.g. `192.168.1.100:37043`) and press Enter to connect.
+2. Or pick a **recent IP** from the list, append `:port`, and confirm.
+3. Enter the pairing code when prompted, or leave it empty to connect directly to an already-paired device.
+
+Recent IPs are stored locally (up to 10 entries). Use the trash icon on a history item to remove it.
+
+After QR pairing or mDNS discovery, the extension may find several connect endpoints for the same device. If one port returns `Connection refused` (a stale mDNS entry), the next available port is tried automatically.
 
 > Both devices must be on the same Wi-Fi network and mDNS (UDP 5353) must not be blocked. Refer to the [official wireless debugging guide](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) for more details.
 
@@ -137,9 +145,9 @@ WIFI:T:ADB;S:studio-<service>;P:<password>;;
 | --- | --- | --- |
 | ADB WLAN: Connect over Wi-Fi | `android.adb.connect` | Open the connection workflow and device picker |
 | ADB WLAN: Restart ADB Server | `android.adb.restart` | Restart the ADB server (`kill-server` → `start-server`) |
-| ADB WLAN: Show Connected Devices | `android.adb.devices` | Show all devices reported by `adb devices -l` |
+| ADB WLAN: Show Connected Devices | `android.adb.devices` | List connected devices; select a USB device to start the wireless setup flow |
 
-The connect command also exposes quick actions for documentation, ADB server restart, and Android 11+ wireless setup.
+The connect command also exposes quick actions for documentation, ADB server restart, and Android 11+ wireless setup. The status bar shortcut runs **Show Connected Devices**.
 
 ## Screenshots
 
@@ -158,8 +166,10 @@ The connect command also exposes quick actions for documentation, ADB server res
 | `ADB does not exist` | Install Platform-Tools and ensure `adb` is on `PATH` |
 | No devices in the picker | Reconnect USB, accept the RSA prompt, run `adb devices -l` |
 | Connection fails after IP selection | Confirm both ends are on the same LAN; retry with `ADB WLAN: Restart ADB Server` |
+| `Connection refused` after pairing | Usually a stale mDNS port; the extension retries other endpoints automatically—wait a moment or toggle wireless debugging off/on |
 | Unrecognized address through USB | Pick the device IP manually from the fallback list |
 | Stale or ghost devices | Run `ADB WLAN: Restart ADB Server` to reset the ADB server |
+| QR scan succeeds but connect hangs | Ensure mDNS is not blocked; check that the phone and host share the same subnet |
 
 If the issue persists, include your OS, Android version, ADB version, and command output when you [open an issue](https://github.com/deskbtm/android-adb-wlan/issues).
 
@@ -182,12 +192,41 @@ npm run compile
 
 Press `F5` in VS Code to launch an Extension Development Host.
 
+### Scripts
+
 | Script | Purpose |
 | --- | --- |
 | `npm run compile` | Build TypeScript to `out/` |
 | `npm run watch` | Rebuild on file changes |
 | `npm run lint` | Run ESLint on `src/` |
-| `npm test` | Compile, lint, and run extension tests |
+| `npm test` | Compile, lint, unit tests, and integration tests |
+| `npm run test:unit` | Mocha tests for `parsers` and `pairingCredentials` |
+| `npm run test:integration` | Extension host tests (command registration, activation) |
+| `npm run package` | Build a `.vsix` package locally |
+| `npm run vscode:publish` | Publish to the Marketplace (requires `VSCE_PAT`) |
+
+### Testing
+
+- **Unit tests** — Pure functions in `src/parsers.ts` and `src/pairingCredentials.ts` (address parsing, mDNS output, QR payload format, multi-endpoint retry).
+- **Integration tests** — Run inside a downloaded VS Code build via `@vscode/test-electron`; verify commands are registered and the extension activates.
+
+Integration tests download VS Code into `.vscode-test/` on first run.
+
+### Releasing
+
+Publishing is automated via GitHub Actions (`.github/workflows/publish.yml`):
+
+1. Bump `version` in `package.json` and update `CHANGELOG.md`.
+2. Commit, tag, and push:
+
+```bash
+git tag v0.0.11
+git push origin master --tags
+```
+
+3. The workflow lints, runs tests, and publishes when the tag (e.g. `v0.0.11`) matches `package.json` (`0.0.11`).
+
+Repository secret **`VSCE_PAT`** (Azure DevOps Marketplace token with **Manage** scope) must be configured in GitHub Actions settings.
 
 ## Related Extensions
 
