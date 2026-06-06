@@ -62,7 +62,9 @@
     "pretest": "npm run compile && npm run lint",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "mocha --ui tdd out/test/suite/parsers.test.js out/test/suite/pairingCredentials.test.js",
-    "test:integration": "node ./out/test/runTest.js"
+    "test:integration": "node ./out/test/runTest.js",
+    "package": "vsce package --no-dependencies --allow-star-activation",
+    "vscode:publish": "vsce publish --no-dependencies --allow-star-activation"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -74,6 +76,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.2",
     "eslint": "^8.57.0",
     "glob": "^7.1.6",
     "mocha": "^7.0.1",
