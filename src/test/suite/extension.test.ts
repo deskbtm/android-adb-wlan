@@ -1,15 +1,24 @@
-import * as assert from 'assert';
+import * as assert from "assert";
+import * as vscode from "vscode";
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from 'vscode';
-// import * as myExtension from '../extension';
+suite("extension", () => {
+  test("registers ADB WLAN commands", async () => {
+    const commands = await vscode.commands.getCommands(true);
+    const expectedCommands = ["android.adb.connect", "android.adb.restart", "android.adb.devices"];
 
-suite('Extension Test Suite', () => {
-  vscode.window.showInformationMessage('Start all tests.');
+    for (const command of expectedCommands) {
+      assert.strictEqual(commands.includes(command), true, `missing command: ${command}`);
+    }
+  });
 
-  test('Sample test', () => {
-    assert.equal(-1, [1, 2, 3].indexOf(5));
-    assert.equal(-1, [1, 2, 3].indexOf(0));
+  test("activates the extension", async () => {
+    const extension = vscode.extensions.getExtension("HanWang.android-adb-wlan");
+    assert.ok(extension, "extension should be loaded in the test host");
+
+    if (!extension.isActive) {
+      await extension.activate();
+    }
+
+    assert.strictEqual(extension.isActive, true);
   });
 });

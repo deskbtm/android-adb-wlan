@@ -5,6 +5,7 @@
 		"outDir": "out",
 		"lib": [
 			"ESNext",
+			"DOM"
 		],
 		"sourceMap": true,
 		"baseUrl": ".",

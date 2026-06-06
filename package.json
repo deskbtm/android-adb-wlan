@@ -1,7 +1,7 @@
 {
   "name": "android-adb-wlan",
   "displayName": "Android ADB WLAN",
-  "description": "connect android with wlan",
+  "description": "Connect Android devices to ADB over Wi-Fi from VS Code.",
   "version": "0.0.10",
   "icon": "android.png",
   "license": "MIT",
@@ -27,7 +27,8 @@
     "commands": [
       {
         "command": "android.adb.connect",
-        "title": "Android adb wlan connect",
+        "title": "Connect over Wi-Fi",
+        "category": "ADB WLAN",
         "icon": {
           "dark": "assets/adb.svg",
           "light": "assets/adb.svg"
@@ -35,11 +36,13 @@
       },
       {
         "command": "android.adb.restart",
-        "title": "Android adb wlan restart"
+        "title": "Restart ADB Server",
+        "category": "ADB WLAN"
       },
       {
         "command": "android.adb.devices",
-        "title": "Android adb wlan show devices"
+        "title": "Show Connected Devices",
+        "category": "ADB WLAN"
       }
     ],
     "menus": {
@@ -57,17 +60,21 @@
     "lint": "eslint src --ext ts",
     "watch": "tsc --watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "test": "node ./out/test/runTest.js"
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "mocha --ui tdd out/test/suite/parsers.test.js out/test/suite/pairingCredentials.test.js",
+    "test:integration": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/ip": "^1.1.0",
     "@types/mocha": "^7.0.1",
     "@types/node": "^12.11.7",
+    "@types/qrcode": "^1.5.6",
     "@types/vscode": "^1.42.0",
-    "@typescript-eslint/eslint-plugin": "^2.18.5",
-    "@typescript-eslint/parser": "^2.18.0",
-    "eslint": "^6.8.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^8.57.0",
     "glob": "^7.1.6",
     "mocha": "^7.0.1",
     "typescript": "5.3.3",
@@ -77,6 +84,7 @@
     "delay": "^4.3.0",
     "execa": "^4.0.0",
     "ip": "^1.1.5",
-    "open": "^7.0.2"
+    "open": "^7.0.2",
+    "qrcode": "^1.5.4"
   }
 }
