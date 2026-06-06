@@ -4,7 +4,7 @@
 [![Installs](https://vsmarketplacebadges.dev/installs/HanWang.android-adb-wlan.svg)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Connect Android devices to ADB over Wi-Fi directly from VS Code. Set up wireless debugging in a few steps, manage multiple devices, and keep your workflow cable-free after the initial pairing.
+Connect Android phones and tablets to **ADB over Wi-Fi** (wireless debugging) directly from VS Code. Pair with a **QR code** on Android 11+, run **`adb connect`** / **`adb pair`**, or use USB **`adb tcpip`** on older devices — then work cable-free. Built for **native Android**, **React Native**, and **Flutter** workflows: multi-device picker, recent IP history, mDNS reconnect, and a title-bar shortcut.
 
 ## What's New
 
@@ -80,7 +80,7 @@ adb devices -l
 **From the Marketplace**
 
 1. Open the Extensions view in VS Code (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-2. Search for **Android ADB WLAN**
+2. Search for **Android ADB WLAN**, **adb wifi**, **wireless debugging**, or **adb wireless**
 3. Click **Install**
 
 Direct link: [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)

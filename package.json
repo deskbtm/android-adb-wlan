@@ -1,14 +1,22 @@
 {
   "name": "android-adb-wlan",
-  "displayName": "Android ADB WLAN",
-  "description": "Connect Android devices to ADB over Wi-Fi from VS Code.",
+  "displayName": "Android ADB WLAN — Wireless Debugging",
+  "description": "Connect Android phones to ADB over Wi-Fi. Wireless debugging, QR pairing (Android 11+), adb connect/pair, USB tcpip, multi-device picker, and mDNS reconnect for cross-platform mobile dev: React Native, Flutter, Expo, Capacitor, and native Android.",
   "version": "0.0.10",
   "icon": "android.png",
   "license": "MIT",
   "publisher": "HanWang",
+  "homepage": "https://github.com/deskbtm/android-adb-wlan#readme",
+  "bugs": {
+    "url": "https://github.com/deskbtm/android-adb-wlan/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/deskbtm/android-adb-wlan"
+  },
+  "galleryBanner": {
+    "color": "#1B3A2D",
+    "theme": "dark"
   },
   "engines": {
     "vscode": "^1.42.0",
@@ -18,6 +26,44 @@
   "categories": [
     "Debuggers",
     "Other"
+  ],
+  "keywords": [
+    "android",
+    "adb",
+    "adb wifi",
+    "adb wireless",
+    "wireless debugging",
+    "wireless adb",
+    "android debug bridge",
+    "adb connect",
+    "adb pair",
+    "adb tcpip",
+    "wifi",
+    "wi-fi",
+    "wlan",
+    "qr code",
+    "qr pairing",
+    "pair device",
+    "android 11",
+    "android device",
+    "phone",
+    "mobile",
+    "device picker",
+    "mdns",
+    "platform-tools",
+    "cross-platform",
+    "cross platform",
+    "multiplatform",
+    "mobile development",
+    "react native",
+    "flutter",
+    "expo",
+    "capacitor",
+    "ionic",
+    "uni-app",
+    "taro",
+    "native android",
+    "developer options"
   ],
   "activationEvents": [
     "*"
