@@ -2,7 +2,7 @@
   "name": "android-adb-wlan",
   "displayName": "Android ADB WLAN — Wireless Debugging",
   "description": "Connect Android phones to ADB over Wi-Fi. Wireless debugging, QR pairing (Android 11+), adb connect/pair, USB tcpip, multi-device picker, and mDNS reconnect for cross-platform mobile dev: React Native, Flutter, Expo, Capacitor, and native Android.",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "icon": "android.png",
   "license": "MIT",
   "publisher": "HanWang",
@@ -19,7 +19,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.120.0",
+    "vscode": "^1.42.0",
     "yarn": "Please use npm",
     "pnpm": "Please use npm"
   },
@@ -109,8 +109,8 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "mocha --ui tdd out/test/suite/parsers.test.js out/test/suite/pairingCredentials.test.js",
     "test:integration": "node ./out/test/runTest.js",
-    "package": "vsce package --no-dependencies --allow-star-activation",
-    "vscode:publish": "vsce publish --no-dependencies --allow-star-activation"
+    "package": "vsce package --allow-star-activation",
+    "vscode:publish": "vsce publish --allow-star-activation"
   },
   "devDependencies": {
     "@types/glob": "7.2.0",
@@ -118,7 +118,7 @@
     "@types/mocha": "7.0.2",
     "@types/node": "12.20.55",
     "@types/qrcode": "1.5.6",
-    "@types/vscode": "1.120.0",
+    "@types/vscode": "1.42.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "@vscode/test-electron": "2.5.2",

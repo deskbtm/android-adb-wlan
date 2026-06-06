@@ -173,11 +173,42 @@ export default class AdbUtils {
   public listMdnsServices(): MdnsService[] {
     try {
       const output = execa.commandSync("adb mdns services").stdout;
-      return parseMdnsServices(output);
+      return this.parseMdnsServices(output);
     } catch (error) {
       console.error(error);
       return [];
     }
+  }
+
+  private parseMdnsServices(stdout: string): MdnsService[] {
+    const services: MdnsService[] = [];
+
+    for (const line of stdout.split(/\n|\r\n/)) {
+      const trimmedLine = line.trim();
+      if (!trimmedLine || trimmedLine.startsWith("List of")) {
+        continue;
+      }
+
+      const parts = trimmedLine.split(/\t+/);
+      if (parts.length < 3) {
+        continue;
+      }
+
+      const [instanceName, serviceType, endpoint] = parts;
+      const endpointMatch = endpoint.match(/^(\d{1,3}(?:\.\d{1,3}){3}):(\d+)$/);
+      if (!endpointMatch) {
+        continue;
+      }
+
+      services.push({
+        instanceName,
+        serviceType,
+        address: endpointMatch[1],
+        port: endpointMatch[2],
+      });
+    }
+
+    return services;
   }
 
   public pairDevice(host: string, port: string, pairingCode: string) {

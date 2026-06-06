@@ -51,6 +51,6 @@ jobs:
         run: xvfb-run -a npm run test:integration
 
       - name: Publish to VS Code Marketplace
-        run: npx @vscode/vsce publish --no-dependencies --allow-star-activation
+        run: npx @vscode/vsce publish --allow-star-activation
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.0.12] - 2026-06-06
+
+### Fixed
+
+- Include production `node_modules` in the published VSIX (`--no-dependencies` prevented `open`, `delay`, `execa`, and `qrcode` from loading, so commands were never registered)
+
 ## [0.0.11] - 2026-06-06
 
 ### Added
