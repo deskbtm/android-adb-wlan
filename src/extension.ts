@@ -233,7 +233,7 @@ const updateDeviceStatusBar = async function () {
   if (devices.length > 0) {
     const model = devices[0].model ? devices[0].model.replace("model:", "") : "";
     deviceStatusBar.tooltip = "Show connected devices";
-    deviceStatusBar.text = `ADB WLAN: ${model}`;
+    deviceStatusBar.text = `📱 ${model}`;
     deviceStatusBar.command = CommandId.devices;
 
     deviceStatusBar.show();
