@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.0.13] - 2026-06-06
+
+### Changed
+
+- README: move screenshots above the fold; document macOS support; clarify USB-assisted workflow via **Connect over Wi-Fi**
+- Marketplace description and keywords: drop `adb tcpip` wording; keep USB-assisted wireless setup
+
 ## [0.0.12] - 2026-06-06
 
 ### Fixed

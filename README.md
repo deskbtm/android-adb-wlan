@@ -4,7 +4,17 @@
 [![Installs](https://vsmarketplacebadges.dev/installs/HanWang.android-adb-wlan.svg)](https://marketplace.visualstudio.com/items?itemName=HanWang.android-adb-wlan)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Connect Android phones and tablets to **ADB over Wi-Fi** (wireless debugging) directly from VS Code. Pair with a **QR code** on Android 11+, run **`adb connect`** / **`adb pair`**, or use USB **`adb tcpip`** on older devices — then work cable-free. Built for **native Android**, **React Native**, and **Flutter** workflows: multi-device picker, recent IP history, mDNS reconnect, and a title-bar shortcut.
+Connect Android phones and tablets to **ADB over Wi-Fi** (wireless debugging) directly from VS Code. Pair with a **QR code** on Android 11+, run **`adb connect`** / **`adb pair`**, or switch from USB on older devices — then work cable-free. Built for **native Android**, **React Native**, and **Flutter** workflows: multi-device picker, recent IP history, mDNS reconnect, and a title-bar shortcut.
+
+## Screenshots
+
+**Device list and status bar**
+
+![Device list and status bar](./doc/1.png)
+
+**End-to-end usage**
+
+![Usage demo](./doc/usage.gif)
 
 ## What's New
 
@@ -18,6 +28,7 @@ Recent improvements in this release:
 
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [What's New](#whats-new)
 - [Overview](#overview)
 - [Features](#features)
@@ -26,7 +37,6 @@ Recent improvements in this release:
 - [Getting Started](#getting-started)
 - [Connection Workflows](#connection-workflows)
 - [Commands](#commands)
-- [Screenshots](#screenshots)
 - [Troubleshooting](#troubleshooting)
 - [Known Limitations](#known-limitations)
 - [Development](#development)
@@ -50,7 +60,7 @@ The extension shells out to the system `adb` binary. No additional daemon or mob
 | --- | --- |
 | Wireless debugging | Connect devices over WLAN after setup |
 | Multi-device support | View and switch between multiple connected devices |
-| USB-assisted setup | `adb tcpip` flow for Android 10 and below |
+| USB-assisted setup | Switch a USB-connected device to wireless ADB (Android 10 and below) |
 | Android 11+ pairing | Native wireless debugging with `adb pair` / `adb connect` |
 | QR code pairing | In-editor QR for **Pair device with QR code** on Android 11+ |
 | Recent IP history | Quick Pick list of recent wireless IPs with one-click fill and delete |
@@ -101,11 +111,11 @@ After a successful connection, the status bar displays the connected device mode
 
 ### USB-assisted (Android 10 and below)
 
-Use this path when the device is connected over USB and supports `adb tcpip`.
+Use this path when the device is connected over USB (Android 10 and below).
 
 1. Connect the device via USB and authorize the debugging prompt.
-2. Run `ADB WLAN: Show Connected Devices`, or click the **ADB WLAN** item in the status bar.
-3. Select the USB device from the list.
+2. Run `ADB WLAN: Connect over Wi-Fi` (title-bar ADB icon or Command Palette).
+3. Select the USB device from the picker (not the wireless-debugging menu items).
 4. Enter a TCP port when prompted (default: `1031`).
 5. Choose the device IP address (a matching LAN IP is preferred when available).
 6. Remove the USB cable once the success dialog appears.
@@ -143,21 +153,11 @@ After QR pairing or mDNS discovery, the extension may find several connect endpo
 
 | Command Palette | Command ID | Description |
 | --- | --- | --- |
-| ADB WLAN: Connect over Wi-Fi | `android.adb.connect` | Open the connection workflow and device picker |
+| ADB WLAN: Connect over Wi-Fi | `android.adb.connect` | List USB and wireless devices; USB selection starts the wireless setup flow |
 | ADB WLAN: Restart ADB Server | `android.adb.restart` | Restart the ADB server (`kill-server` → `start-server`) |
-| ADB WLAN: Show Connected Devices | `android.adb.devices` | List connected devices; select a USB device to start the wireless setup flow |
+| ADB WLAN: Show Connected Devices | `android.adb.devices` | List currently connected devices |
 
-The connect command also exposes quick actions for documentation, ADB server restart, and Android 11+ wireless setup. The status bar shortcut runs **Show Connected Devices**.
-
-## Screenshots
-
-**Device list and status bar**
-
-![Device list and status bar](./doc/1.png)
-
-**End-to-end usage**
-
-![Usage demo](./doc/usage.gif)
+The connect command also exposes quick actions for documentation, ADB server restart, and Android 11+ wireless setup. The status bar shortcut runs **Show Connected Devices** (view only).
 
 ## Troubleshooting
 
