@@ -125,7 +125,7 @@
     "@vscode/vsce": "3.9.2",
     "eslint": "8.57.1",
     "glob": "7.2.3",
-    "mocha": "7.2.0",
+    "mocha": "11.7.6",
     "typescript": "5.3.3",
     "vscode-test": "1.6.1"
   },
